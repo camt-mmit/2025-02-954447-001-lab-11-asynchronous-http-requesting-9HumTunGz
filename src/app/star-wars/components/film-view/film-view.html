@@ -1,11 +1,29 @@
 @if (resource.hasValue()) {
   @let film = resource.value()!;
 
+  <!-- 🎬 STAR WARS VIDEO -->
+  <section class="film-video">
+    <iframe
+      width="100%"
+      height="420"
+      src="https://www.youtube.com/embed/vZ734NWnAHA"
+      title="Star Wars"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+    >
+    </iframe>
+  </section>
+
   <dl class="_data-view">
     <dt>Title</dt>
-    <dd>{{ film.title }}</dd>
+    <dd>
+      <button type="button" class="app-cl-link" (click)="searchGoogle(film.title)">
+        {{ film.title }}
+      </button>
+    </dd>
 
-    <dt>Episode ID</dt>
+    <dt>Episode</dt>
     <dd>{{ film.episode_id }}</dd>
 
     <dt>Opening Crawl</dt>
@@ -19,21 +37,23 @@
     <dt>Producer</dt>
     <dd>{{ film.producer }}</dd>
 
-    <dt>Release Date</dt>
+    <dt>Release</dt>
     <dd>{{ film.release_date | date }}</dd>
 
     <dt>Characters</dt>
     <dd>
       <ul>
-        @for (charPromise of characters(); track charPromise) {
-          @if (charPromise | async; as char) {
+        @for (c of characters(); track c) {
+          @if (c | async; as char) {
             <li>
               <a [routerLink]="['/star-wars/people', getId(char.url)]" class="app-cmp-link">
                 {{ char.name }}
               </a>
+
+              <button type="button" class="app-cl-link" (click)="searchGoogle(char.name)">
+                🔍
+              </button>
             </li>
-          } @else {
-            <li><span class="_status-loading">Loading</span></li>
           }
         }
       </ul>
@@ -42,15 +62,17 @@
     <dt>Planets</dt>
     <dd>
       <ul>
-        @for (planetPromise of planets(); track planetPromise) {
-          @if (planetPromise | async; as planet) {
+        @for (p of planets(); track p) {
+          @if (p | async; as planet) {
             <li>
               <a [routerLink]="['/star-wars/planets', getId(planet.url)]" class="app-cmp-link">
                 {{ planet.name }}
               </a>
+
+              <button type="button" class="app-cl-link" (click)="searchGoogle(planet.name)">
+                🔍
+              </button>
             </li>
-          } @else {
-            <li><span class="_status-loading">Loading</span></li>
           }
         }
       </ul>

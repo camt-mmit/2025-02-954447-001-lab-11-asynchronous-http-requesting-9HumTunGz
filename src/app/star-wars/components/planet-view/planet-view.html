@@ -1,4 +1,8 @@
-<h2>{{ resource.value().name }}</h2>
+<h2>
+  <button type="button" class="app-cl-link" (click)="searchGoogle(resource.value().name)">
+    {{ resource.value().name }}
+  </button>
+</h2>
 
 <p><strong>Climate:</strong> {{ resource.value().climate }}</p>
 <p><strong>Terrain:</strong> {{ resource.value().terrain }}</p>
@@ -9,9 +13,11 @@
   @for (r of residents(); track r) {
     @if (r | async; as person) {
       <li>
-        <a [routerLink]="['/star-wars/people', getId(person.url)]">
+        <a [routerLink]="['/star-wars/people', getId(person.url)]" class="app-cmp-link">
           {{ person.name }}
         </a>
+
+        <button type="button" class="app-cl-link" (click)="searchGoogle(person.name)">🔍</button>
       </li>
     }
   }
@@ -22,9 +28,11 @@
   @for (f of films(); track f) {
     @if (f | async; as film) {
       <li>
-        <a [routerLink]="['/star-wars/films', getId(film.url)]">
+        <a [routerLink]="['/star-wars/films', getId(film.url)]" class="app-cmp-link">
           {{ film.title }}
         </a>
+
+        <button type="button" class="app-cl-link" (click)="searchGoogle(film.title)">🔍</button>
       </li>
     }
   }

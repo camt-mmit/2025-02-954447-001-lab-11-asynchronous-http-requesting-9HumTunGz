@@ -16,14 +16,14 @@ export class FilmView {
   @Input({ required: true })
   resource!: Resource<Film>;
 
-  /** Characters (async) */
+  /** Characters */
   readonly characters = computed(() =>
     this.resource.hasValue()
       ? this.resource.value()!.characters.map((url) => fetchResource<Person>(url))
       : [],
   );
 
-  /** Planets (async) */
+  /** Planets */
   readonly planets = computed(() =>
     this.resource.hasValue()
       ? this.resource.value()!.planets.map((url) => fetchResource<Planet>(url))
@@ -32,5 +32,12 @@ export class FilmView {
 
   protected getId(url: string): string {
     return url.split('/').filter(Boolean).pop()!;
+  }
+
+  searchGoogle(text: string) {
+    window.open(
+      `https://www.google.com/search?q=${encodeURIComponent(text + ' star wars')}`,
+      '_blank',
+    );
   }
 }
