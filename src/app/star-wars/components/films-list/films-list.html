@@ -1,0 +1,11 @@
+@if (resource.value(); as result) {
+  <ul>
+    @for (film of result.results; track film.url) {
+      <li>
+        <a [routerLink]="['/star-wars/films', getId(film.url)]">
+          {{ film.title }}
+        </a>
+      </li>
+    }
+  </ul>
+}

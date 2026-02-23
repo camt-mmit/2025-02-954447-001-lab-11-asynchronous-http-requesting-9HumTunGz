@@ -1,0 +1,65 @@
+@if (resource.hasValue()) {
+  @let film = resource.value()!;
+
+  <dl class="_data-view">
+    <dt>Title</dt>
+    <dd>{{ film.title }}</dd>
+
+    <dt>Episode ID</dt>
+    <dd>{{ film.episode_id }}</dd>
+
+    <dt>Opening Crawl</dt>
+    <dd>
+      <pre>{{ film.opening_crawl }}</pre>
+    </dd>
+
+    <dt>Director</dt>
+    <dd>{{ film.director }}</dd>
+
+    <dt>Producer</dt>
+    <dd>{{ film.producer }}</dd>
+
+    <dt>Release Date</dt>
+    <dd>{{ film.release_date | date }}</dd>
+
+    <dt>Characters</dt>
+    <dd>
+      <ul>
+        @for (charPromise of characters(); track charPromise) {
+          @if (charPromise | async; as char) {
+            <li>
+              <a [routerLink]="['/star-wars/people', getId(char.url)]" class="app-cmp-link">
+                {{ char.name }}
+              </a>
+            </li>
+          } @else {
+            <li><span class="_status-loading">Loading</span></li>
+          }
+        }
+      </ul>
+    </dd>
+
+    <dt>Planets</dt>
+    <dd>
+      <ul>
+        @for (planetPromise of planets(); track planetPromise) {
+          @if (planetPromise | async; as planet) {
+            <li>
+              <a [routerLink]="['/star-wars/planets', getId(planet.url)]" class="app-cmp-link">
+                {{ planet.name }}
+              </a>
+            </li>
+          } @else {
+            <li><span class="_status-loading">Loading</span></li>
+          }
+        }
+      </ul>
+    </dd>
+
+    <dt>Created</dt>
+    <dd>{{ film.created | date }}</dd>
+
+    <dt>Edited</dt>
+    <dd>{{ film.edited | date }}</dd>
+  </dl>
+}

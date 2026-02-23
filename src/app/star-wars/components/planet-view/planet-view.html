@@ -1,0 +1,34 @@
+<h2>{{ resource.value().name }}</h2>
+
+<p><strong>Climate:</strong> {{ resource.value().climate }}</p>
+<p><strong>Terrain:</strong> {{ resource.value().terrain }}</p>
+<p><strong>Population:</strong> {{ resource.value().population }}</p>
+
+<h3>Residents</h3>
+<ul>
+  @for (r of residents(); track r) {
+    @if (r | async; as person) {
+      <li>
+        <a [routerLink]="['/star-wars/people', getId(person.url)]">
+          {{ person.name }}
+        </a>
+      </li>
+    }
+  }
+</ul>
+
+<h3>Films</h3>
+<ul>
+  @for (f of films(); track f) {
+    @if (f | async; as film) {
+      <li>
+        <a [routerLink]="['/star-wars/films', getId(film.url)]">
+          {{ film.title }}
+        </a>
+      </li>
+    }
+  }
+</ul>
+
+<p><strong>Created:</strong> {{ resource.value().created | date }}</p>
+<p><strong>Edited:</strong> {{ resource.value().edited | date }}</p>
