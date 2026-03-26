@@ -1,17 +1,6 @@
-@use '../../scss/common';
-@use '../../scss/data';
-@use '../../scss/status';
+@use '../../scss/view-component';
 
-:host {
-  @include common.layout-block();
-
-  @layer {
-    & {
-      --_warn-color: var(--app-warn-color);
-    }
-  }
-}
-
-._data-view {
-  @include data.layout-data-view();
+._number-data {
+  display: inline-block;
+  width: 6ch;
 }

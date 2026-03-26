@@ -20,8 +20,7 @@
 </header>
 
 @if (resource.hasValue()) {
-  <!-- 🔥 สำคัญมาก: ส่ง resource เท่านั้น -->
-  <app-planet-view [resource]="resource" />
+  <app-planet-view [data]="resource.value()" [moduleRoute]="moduleRoute" />
 } @else if (resource.error(); as error) {
   <p class="_error-message">{{ error.message }}</p>
 }

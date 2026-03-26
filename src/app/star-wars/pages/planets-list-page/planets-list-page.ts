@@ -9,9 +9,8 @@ import {
 } from '@angular/core';
 import { FormField, disabled, form, submit } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
-
 import { PlanetsList } from '../../components/planets-list/planets-list';
-import { planetsListResource, purnEmptyProperties } from '../../helpers';
+import { ResultsListParams, planetsListResource, purnEmptyProperties } from '../../helpers';
 
 @Component({
   selector: 'app-planets-list-page',
@@ -21,25 +20,18 @@ import { planetsListResource, purnEmptyProperties } from '../../helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanetsListPage {
-  // ===== query params =====
   readonly search = input<string>();
   readonly page = input<string>();
 
-  // ===== params =====
-  protected readonly params = computed(
-    () =>
-      ({
-        search: this.search() ?? '',
-        page: this.page() ?? '',
-      }) as const,
-  );
+  private readonly params = computed<Required<ResultsListParams>>(() => ({
+    search: this.search() ?? '',
+    page: this.page() ?? '',
+  }));
 
-  // ===== resource =====
   protected readonly resource = planetsListResource(() =>
     purnEmptyProperties(this.params()),
   ).asReadonly();
 
-  // ===== pagination =====
   protected readonly currentPage = computed(() => +(this.params().page ? this.params().page : '1'));
 
   protected readonly previousPage = computed(() =>
@@ -54,7 +46,6 @@ export class PlanetsListPage {
       : null,
   );
 
-  // ===== form =====
   protected readonly form = form(
     linkedSignal(() => ({ search: this.params().search }) as const),
     (path) => {
@@ -64,7 +55,6 @@ export class PlanetsListPage {
 
   private readonly router = inject(Router);
 
-  // ===== actions =====
   protected onSearch(): void {
     submit(
       this.form,

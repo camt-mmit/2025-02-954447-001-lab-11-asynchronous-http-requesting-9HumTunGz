@@ -3,17 +3,18 @@
   <dt>Name</dt>
   <dd>
     <a
-      [href]="'https://www.google.com/search?q=' + (data().name + ' Star Wars')"
+      [href]="data().name | searchUrl"
       target="_blank"
       rel="noopener noreferrer"
-      class="app-cmp-link"
+      class="app-cmp-link app-cl-external"
+      >{{ data().name }}</a
     >
-      {{ data().name }}
-    </a>
   </dd>
 
   <dt>Birth Year</dt>
-  <dd>{{ data().birth_year }}</dd>
+  <dd>
+    <span class="app-cl-code">{{ data().birth_year }}</span>
+  </dd>
 
   <dt>Eye Color</dt>
   <dd>{{ data().eye_color }}</dd>
@@ -25,10 +26,22 @@
   <dd>{{ data().hair_color }}</dd>
 
   <dt>Height</dt>
-  <dd>{{ data().height }}</dd>
+  <dd>
+    @if (data().height | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().height | number }}</span> cm
+    } @else {
+      {{ data().height }}
+    }
+  </dd>
 
   <dt>Mass</dt>
-  <dd>{{ data().mass }}</dd>
+  <dd>
+    @if (data().mass | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().mass | number }}</span> kg
+    } @else {
+      {{ data().mass }}
+    }
+  </dd>
 
   <dt>Skin Color</dt>
   <dd>{{ data().skin_color }}</dd>
@@ -112,19 +125,20 @@
   <dt>Films (form)</dt>
   <dd>
     <ul>
-      @for (filmFieldTree of filmsForm; track filmFieldTree) {
-        @let filmResource = filmFieldTree().metadata(filmResourceKey)!;
+      @for (fieldTree of form.films; track fieldTree) {
+        @let resource = fieldTree().metadata(filmResourceKey)!;
+
         <li>
-          @if (filmResource.hasValue()) {
+          @if (resource.hasValue()) {
             <a
-              [routerLink]="['films', filmResource.value().url | extractId]"
+              [routerLink]="['films', resource.value().url | extractId]"
               [relativeTo]="moduleRoute()"
               class="app-cmp-link"
-              >{{ filmResource.value().title }}</a
+              >{{ resource.value().title }}</a
             >
-          } @else if (filmResource.error(); as error) {
+          } @else if (resource.error(); as error) {
             <span class="_status-warning">{{ error.message }}</span>
-          } @else if (filmResource.isLoading()) {
+          } @else if (resource.isLoading()) {
             <span class="_status-loading">Loading</span>
           }
         </li>

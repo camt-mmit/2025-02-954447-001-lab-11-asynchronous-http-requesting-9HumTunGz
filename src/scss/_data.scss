@@ -1,12 +1,15 @@
 @use './common';
 
-@mixin layout-data-form($label-width) {
+@mixin layout-data-form($label-width: 15ch) {
   @layer {
     & {
       --_row-gap: var(--app-row-gap);
+      --_warn-color: var(--app-warn-color);
+      --__label-width: var(--_label-width, #{$label-width});
     }
   }
 
+  box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
   row-gap: var(--_row-gap);
@@ -17,12 +20,23 @@
     align-items: baseline;
 
     & > b {
-      width: $label-width;
+      width: var(--__label-width);
       margin-right: 1ch;
+
+      &:has(+ *:required) {
+        &::after {
+          content: '*';
+          color: var(--_warn-color);
+        }
+      }
 
       & + * {
         box-sizing: border-box;
         flex: 1 0 auto;
+
+        *:invalid {
+          border-color: var(--_warn-color);
+        }
       }
     }
   }
@@ -54,6 +68,7 @@
       @layer {
         & {
           text-align: justify;
+          white-space: pre-wrap;
         }
       }
     }

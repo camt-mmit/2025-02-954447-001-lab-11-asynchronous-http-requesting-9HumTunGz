@@ -11,11 +11,12 @@ export async function fetchResource<T>(
   url: string | null,
   abortSignal: AbortSignal | null = null,
 ): Promise<T | null> {
-  if (url == null) {
+  if (url === null) {
     return null;
   }
 
-  const res = await fetch(url, { signal: abortSignal });
+  const res = await fetch(url, { cache: 'force-cache', signal: abortSignal });
+
   return await res.json();
 }
 
@@ -26,38 +27,68 @@ export interface ResultsListParams {
   readonly page?: string;
 }
 
-// --- People ---
-export function peopleListResource(params: () => ResultsListParams) {
-  return httpResource<ResultsList<Person>>(() => ({
-    url: `${entryPointURL}/people`,
-    params: { ...params() },
-  }));
+export function peopleListResource(params: () => ResultsListParams | undefined) {
+  return httpResource<ResultsList<Person>>(() =>
+    params()
+      ? {
+          url: `${entryPointURL}/people`,
+          params: { ...params()! },
+        }
+      : undefined,
+  );
 }
 
-export function personResource(id: () => string) {
-  return httpResource<Person>(() => `${entryPointURL}/people/${id()}`);
+export function personResource(id: () => string | undefined) {
+  return httpResource<Person>(() =>
+    id()
+      ? {
+          url: `${entryPointURL}/people/${id()!}`,
+          cache: 'force-cache',
+        }
+      : undefined,
+  );
 }
 
-// --- Films ---
-export function filmsListResource(params: () => ResultsListParams) {
-  return httpResource<ResultsList<Film>>(() => ({
-    url: `${entryPointURL}/films`,
-    params: { ...params() },
-  }));
+export function filmsListResource(params: () => ResultsListParams | undefined) {
+  return httpResource<ResultsList<Film>>(() =>
+    params()
+      ? {
+          url: `${entryPointURL}/films`,
+          params: { ...params()! },
+        }
+      : undefined,
+  );
 }
 
-export function filmResource(id: () => string) {
-  return httpResource<Film>(() => `${entryPointURL}/films/${id()}`);
+export function filmResource(id: () => string | undefined) {
+  return httpResource<Film>(() =>
+    id()
+      ? {
+          url: `${entryPointURL}/films/${id()!}`,
+          cache: 'force-cache',
+        }
+      : undefined,
+  );
 }
 
-// --- Planets ---
-export function planetsListResource(params: () => ResultsListParams) {
-  return httpResource<ResultsList<Planet>>(() => ({
-    url: `${entryPointURL}/planets`,
-    params: { ...params() },
-  }));
+export function planetsListResource(params: () => ResultsListParams | undefined) {
+  return httpResource<ResultsList<Planet>>(() =>
+    params()
+      ? {
+          url: `${entryPointURL}/planets`,
+          params: { ...params()! },
+        }
+      : undefined,
+  );
 }
 
-export function planetResource(id: () => string) {
-  return httpResource<Planet>(() => `${entryPointURL}/planets/${id()}`);
+export function planetResource(id: () => string | undefined) {
+  return httpResource<Planet>(() =>
+    id()
+      ? {
+          url: `${entryPointURL}/planets/${id()!}`,
+          cache: 'force-cache',
+        }
+      : undefined,
+  );
 }

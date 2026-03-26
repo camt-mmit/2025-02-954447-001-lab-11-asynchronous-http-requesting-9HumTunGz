@@ -1,42 +1,120 @@
-<h2>
-  <button type="button" class="app-cl-link" (click)="searchGoogle(resource.value().name)">
-    {{ resource.value().name }}
-  </button>
-</h2>
+<hr />
+<dl class="_data-view">
+  <dt>Name</dt>
+  <dd>
+    <a
+      [href]="data().name | searchUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="app-cmp-link app-cl-external"
+      >{{ data().name }}</a
+    >
+  </dd>
 
-<p><strong>Climate:</strong> {{ resource.value().climate }}</p>
-<p><strong>Terrain:</strong> {{ resource.value().terrain }}</p>
-<p><strong>Population:</strong> {{ resource.value().population }}</p>
-
-<h3>Residents</h3>
-<ul>
-  @for (r of residents(); track r) {
-    @if (r | async; as person) {
-      <li>
-        <a [routerLink]="['/star-wars/people', getId(person.url)]" class="app-cmp-link">
-          {{ person.name }}
-        </a>
-
-        <button type="button" class="app-cl-link" (click)="searchGoogle(person.name)">🔍</button>
-      </li>
+  <dt>Diameter</dt>
+  <dd>
+    @if (data().diameter | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().diameter | number }}</span> km
+    } @else {
+      {{ data().diameter }}
     }
-  }
-</ul>
+  </dd>
 
-<h3>Films</h3>
-<ul>
-  @for (f of films(); track f) {
-    @if (f | async; as film) {
-      <li>
-        <a [routerLink]="['/star-wars/films', getId(film.url)]" class="app-cmp-link">
-          {{ film.title }}
-        </a>
-
-        <button type="button" class="app-cl-link" (click)="searchGoogle(film.title)">🔍</button>
-      </li>
+  <dt>Rotation Period</dt>
+  <dd>
+    @if (data().rotation_period | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().rotation_period | number }}</span> hr
+    } @else {
+      {{ data().orbital_period }}
     }
-  }
-</ul>
+  </dd>
 
-<p><strong>Created:</strong> {{ resource.value().created | date }}</p>
-<p><strong>Edited:</strong> {{ resource.value().edited | date }}</p>
+  <dt>Orbital Period</dt>
+  <dd>
+    @if (data().orbital_period | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().orbital_period | number }}</span> days
+    } @else {
+      {{ data().orbital_period }}
+    }
+  </dd>
+
+  <dt>Gravity</dt>
+  <dd>{{ data().gravity }}</dd>
+
+  <dt>Population</dt>
+  <dd>
+    @if (data().population | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().population | number }}</span>
+    } @else {
+      {{ data().population }}
+    }
+  </dd>
+
+  <dt>Climate</dt>
+  <dd>{{ data().climate }}</dd>
+
+  <dt>Terrain</dt>
+  <dd>{{ data().terrain }}</dd>
+
+  <dt>Surface Water</dt>
+  <dd>
+    @if (data().surface_water | isNumber) {
+      <span class="app-cl-number _number-data">{{ data().surface_water | number }}</span> %
+    } @else {
+      {{ data().surface_water }}
+    }
+  </dd>
+
+  <dt>Residents</dt>
+  <dd>
+    <ul>
+      @for (fieldTree of form.residents; track fieldTree) {
+        @let resouce = fieldTree().metadata(residentResourceKey)!;
+        <li>
+          @if (resouce.hasValue()) {
+            <a
+              [routerLink]="['people', resouce.value().url | extractId]"
+              [relativeTo]="moduleRoute()"
+              class="app-cmp-link"
+              >{{ resouce.value().name }}</a
+            >
+          } @else if (resouce.error(); as error) {
+            <span class="_status-warning">{{ error.message }}</span>
+          } @else if (resouce.isLoading()) {
+            <span class="_status-loading">Loading</span>
+          }
+        </li>
+      }
+    </ul>
+  </dd>
+
+  <dt>Films</dt>
+  <dd>
+    <ul>
+      @for (fieldTree of form.films; track fieldTree) {
+        @let resource = fieldTree().metadata(filmResourceKey)!;
+        <li>
+          @if (resource.hasValue()) {
+            <a
+              [routerLink]="['films', resource.value().url | extractId]"
+              [relativeTo]="moduleRoute()"
+              class="app-cmp-link"
+              >{{ resource.value().title }}</a
+            >
+          } @else if (resource.error(); as error) {
+            <span class="_status-warning">{{ error.message }}</span>
+          } @else if (resource.isLoading()) {
+            <span class="_status-loading">Loading</span>
+          }
+        </li>
+      }
+    </ul>
+  </dd>
+
+  <dt>Created</dt>
+  <dd>{{ data().created | date }}</dd>
+
+  <dt>Edited</dt>
+  <dd>{{ data().edited | date }}</dd>
+</dl>
+<hr />

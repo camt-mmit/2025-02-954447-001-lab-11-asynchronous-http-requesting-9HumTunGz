@@ -1,15 +1,1 @@
-@use '../../scss/common';
-@use '../../scss/message';
-@use '../../scss/data';
-
-:host {
-  @include common.layout-block();
-}
-
-._empty-message {
-  @include message.layout-message();
-}
-
-._data-list {
-  @include data.layout-data-list();
-}
+@use '../../scss/list-component';

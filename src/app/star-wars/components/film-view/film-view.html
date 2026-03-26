@@ -1,87 +1,92 @@
-@if (resource.hasValue()) {
-  @let film = resource.value()!;
+<app-opening-crawl
+  [episode]="data().episode_id"
+  [title]="data().title"
+  [crawl]="data().opening_crawl"
+  class="_crawl"
+/>
 
-  <!-- 🎬 STAR WARS VIDEO -->
-  <section class="film-video">
-    <iframe
-      width="100%"
-      height="420"
-      src="https://www.youtube.com/embed/vZ734NWnAHA"
-      title="Star Wars"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen
+<hr />
+<dl class="_data-view">
+  <dt>Title</dt>
+  <dd>
+    <a
+      [href]="data().title | searchUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="app-cmp-link app-cl-external"
+      >{{ data().title }}</a
     >
-    </iframe>
-  </section>
+  </dd>
 
-  <dl class="_data-view">
-    <dt>Title</dt>
-    <dd>
-      <button type="button" class="app-cl-link" (click)="searchGoogle(film.title)">
-        {{ film.title }}
-      </button>
-    </dd>
+  <dt>Episode ID</dt>
+  <dd>
+    <span class="app-cl-number">{{ data().episode_id | number }}</span>
+  </dd>
 
-    <dt>Episode</dt>
-    <dd>{{ film.episode_id }}</dd>
+  <dt>Opening Crawl</dt>
+  <dd>{{ data().opening_crawl }}</dd>
 
-    <dt>Opening Crawl</dt>
-    <dd>
-      <pre>{{ film.opening_crawl }}</pre>
-    </dd>
+  <dt>Director</dt>
+  <dd>{{ data().director }}</dd>
 
-    <dt>Director</dt>
-    <dd>{{ film.director }}</dd>
+  <dt>Producer</dt>
+  <dd>{{ data().producer }}</dd>
 
-    <dt>Producer</dt>
-    <dd>{{ film.producer }}</dd>
+  <dt>Release Date</dt>
+  <dd>{{ data().release_date | date }}</dd>
 
-    <dt>Release</dt>
-    <dd>{{ film.release_date | date }}</dd>
+  <dt>Characters</dt>
+  <dd>
+    <ul>
+      @for (fieldTree of form.characters; track fieldTree) {
+        @let resouce = fieldTree().metadata(characterResourceKey)!;
 
-    <dt>Characters</dt>
-    <dd>
-      <ul>
-        @for (c of characters(); track c) {
-          @if (c | async; as char) {
-            <li>
-              <a [routerLink]="['/star-wars/people', getId(char.url)]" class="app-cmp-link">
-                {{ char.name }}
-              </a>
-
-              <button type="button" class="app-cl-link" (click)="searchGoogle(char.name)">
-                🔍
-              </button>
-            </li>
+        <li>
+          @if (resouce.hasValue()) {
+            <a
+              [routerLink]="['people', resouce.value().url | extractId]"
+              [relativeTo]="moduleRoute()"
+              class="app-cmp-link"
+              >{{ resouce.value().name }}</a
+            >
+          } @else if (resouce.error(); as error) {
+            <span class="_status-warning">{{ error.message }}</span>
+          } @else if (resouce.isLoading()) {
+            <span class="_status-loading">Loading</span>
           }
-        }
-      </ul>
-    </dd>
+        </li>
+      }
+    </ul>
+  </dd>
 
-    <dt>Planets</dt>
-    <dd>
-      <ul>
-        @for (p of planets(); track p) {
-          @if (p | async; as planet) {
-            <li>
-              <a [routerLink]="['/star-wars/planets', getId(planet.url)]" class="app-cmp-link">
-                {{ planet.name }}
-              </a>
+  <dt>Planets</dt>
+  <dd>
+    <ul>
+      @for (fieldTree of form.planets; track fieldTree) {
+        @let resouce = fieldTree().metadata(planetResourceKey)!;
 
-              <button type="button" class="app-cl-link" (click)="searchGoogle(planet.name)">
-                🔍
-              </button>
-            </li>
+        <li>
+          @if (resouce.hasValue()) {
+            <a
+              [routerLink]="['planets', resouce.value().url | extractId]"
+              [relativeTo]="moduleRoute()"
+              class="app-cmp-link"
+              >{{ resouce.value().name }}</a
+            >
+          } @else if (resouce.error(); as error) {
+            <span class="_status-warning">{{ error.message }}</span>
+          } @else if (resouce.isLoading()) {
+            <span class="_status-loading">Loading</span>
           }
-        }
-      </ul>
-    </dd>
+        </li>
+      }
+    </ul>
+  </dd>
 
-    <dt>Created</dt>
-    <dd>{{ film.created | date }}</dd>
+  <dt>Created</dt>
+  <dd>{{ data().created | date }}</dd>
 
-    <dt>Edited</dt>
-    <dd>{{ film.edited | date }}</dd>
-  </dl>
-}
+  <dt>Edited</dt>
+  <dd>{{ data().edited | date }}</dd>
+</dl>
+<hr />

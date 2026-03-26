@@ -1,23 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { Film, ResultsList } from '../../types';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ExtractIdPipe } from '../../pipes/extract-id-pipe';
+import { Film } from '../../types';
 
 @Component({
   selector: 'app-films-list',
-  standalone: true, // 🔥 ถ้าไม่มีบรรทัดนี้ = พัง
-  imports: [CommonModule, RouterModule],
+  imports: [RouterLink, ExtractIdPipe],
   templateUrl: './films-list.html',
   styleUrl: './films-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilmsList {
-  @Input({ required: true })
-  resource!: {
-    value: () => ResultsList<Film> | undefined;
-  };
-
-  getId(url: string): string {
-    return url.split('/').filter(Boolean).pop()!;
-  }
+  readonly data = input.required<readonly Film[]>();
 }

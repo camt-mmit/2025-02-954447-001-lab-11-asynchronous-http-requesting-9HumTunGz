@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Injector, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ExtractIdPipe } from '../../pipes/extract-id-pipe';
 import { Person } from '../../types';
@@ -12,6 +12,4 @@ import { Person } from '../../types';
 })
 export class PeopleList {
   readonly data = input.required<readonly Person[]>();
-
-  private readonly injector = inject(Injector);
 }

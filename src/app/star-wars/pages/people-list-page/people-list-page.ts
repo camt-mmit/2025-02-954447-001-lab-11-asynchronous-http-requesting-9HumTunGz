@@ -10,7 +10,7 @@ import {
 import { FormField, disabled, form, submit } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { PeopleList } from '../../components/people-list/people-list';
-import { peopleListResource, purnEmptyProperties } from '../../helpers';
+import { ResultsListParams, peopleListResource, purnEmptyProperties } from '../../helpers';
 
 @Component({
   selector: 'app-people-list-page',
@@ -23,19 +23,18 @@ export class PeopleListPage {
   readonly search = input<string>();
   readonly page = input<string>();
 
-  protected readonly params = computed(
-    () =>
-      ({
-        search: this.search() ?? '',
-        page: this.page() ?? '',
-      }) as const,
-  );
+  private readonly params = computed<Required<ResultsListParams>>(() => ({
+    search: this.search() ?? '',
+    page: this.page() ?? '',
+  }));
 
   protected readonly resource = peopleListResource(() =>
     purnEmptyProperties(this.params()),
   ).asReadonly();
 
-  protected readonly currentPage = computed(() => +(this.params().page ? this.params().page : '1'));
+  protected readonly currentPage = computed(
+    () => +(this.params().page ? this.params().page! : '1'),
+  );
 
   protected readonly previousPage = computed(() =>
     this.resource.hasValue() && this.resource.value().previous

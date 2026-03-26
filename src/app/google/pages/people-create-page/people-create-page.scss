@@ -1,0 +1,58 @@
+@use '../../scss/form-page';
+
+._field-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+._field-label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+._required {
+  color: var(--app-warn-color, red);
+}
+
+._section-header {
+  margin: 1em 0 0.5em;
+}
+
+._add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+._entry-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 0.75em;
+}
+
+._entry-fields {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+._field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+._field-group._flex-grow {
+  flex: 1;
+}
+
+._type-input {
+  width: 90px;
+}
+
+._remove-btn {
+  flex-shrink: 0;
+}

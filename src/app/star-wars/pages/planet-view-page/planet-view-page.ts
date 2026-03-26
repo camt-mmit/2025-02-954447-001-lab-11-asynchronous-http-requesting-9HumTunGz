@@ -1,11 +1,11 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { PlanetView } from '../../components/planet-view/planet-view';
-import { planetResource } from '../../helpers/resources';
+import { planetResource } from '../../helpers';
+import { MOUDLE_ROUTE } from '../../tokens';
 
 @Component({
   selector: 'app-planet-view-page',
-  standalone: true,
   imports: [PlanetView],
   templateUrl: './planet-view-page.html',
   styleUrl: './planet-view-page.scss',
@@ -13,6 +13,8 @@ import { planetResource } from '../../helpers/resources';
 })
 export class PlanetViewPage {
   readonly id = input.required<string>();
+
+  protected moduleRoute = inject(MOUDLE_ROUTE);
 
   protected readonly resource = planetResource(this.id).asReadonly();
 

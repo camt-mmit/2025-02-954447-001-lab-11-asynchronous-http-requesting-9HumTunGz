@@ -20,8 +20,7 @@
 </header>
 
 @if (resource.hasValue()) {
-  <!-- 🔥 ตรงนี้คือคำตอบ -->
-  <app-film-view [resource]="resource" />
+  <app-film-view [data]="resource.value()" [moduleRoute]="moduleRoute" />
 } @else if (resource.error(); as error) {
   <p class="_error-message">{{ error.message }}</p>
 }

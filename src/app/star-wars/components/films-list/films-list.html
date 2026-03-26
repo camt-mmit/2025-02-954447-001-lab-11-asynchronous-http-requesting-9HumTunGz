@@ -1,11 +1,11 @@
-@if (resource.value(); as result) {
-  <ul>
-    @for (film of result.results; track film.url) {
+@if (data().length > 0) {
+  <ul class="_data-list">
+    @for (item of data(); track item) {
       <li>
-        <a [routerLink]="['/star-wars/films', getId(film.url)]">
-          {{ film.title }}
-        </a>
+        <a [routerLink]="item.url | extractId">{{ item.title }}</a>
       </li>
     }
   </ul>
+} @else {
+  <p class="_empty-message">Not Found!!</p>
 }

@@ -1,41 +1,89 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { fetchResource } from '../../helpers/resources';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { httpResource } from '@angular/common/http';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Resource,
+  effect,
+  input,
+  linkedSignal,
+} from '@angular/core';
+import {
+  FieldContext,
+  applyEach,
+  createManagedMetadataKey,
+  form,
+  metadata,
+} from '@angular/forms/signals';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ExtractIdPipe } from '../../pipes/extract-id-pipe';
+import { IsNumberPipe } from '../../pipes/is-number-pipe';
+import { SearchUrlPipe } from '../../pipes/search-url-pipe';
 import { Film, Person, Planet } from '../../types';
 
 @Component({
   selector: 'app-planet-view',
-  standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, DecimalPipe, ExtractIdPipe, IsNumberPipe, SearchUrlPipe],
   templateUrl: './planet-view.html',
   styleUrl: './planet-view.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanetView {
-  @Input({ required: true })
-  resource!: { hasValue(): boolean; value(): Planet };
+  readonly data = input.required<Planet>();
+  readonly moduleRoute = input.required<ActivatedRoute>();
 
-  readonly residents = computed(() =>
-    this.resource.hasValue()
-      ? this.resource.value().residents.map((url) => fetchResource<Person>(url))
-      : [],
+  protected readonly residentResourceKey = createManagedMetadataKey<
+    Resource<Person | undefined>,
+    FieldContext<string>
+  >((ctx) => {
+    const resource = httpResource<Person>(() => ctx()!.value());
+
+    const guardEffectRef = effect((onCleanup) => {
+      ctx()!.fieldTree();
+
+      onCleanup(() => {
+        guardEffectRef.destroy();
+        resource.destroy();
+      });
+    });
+
+    return resource.asReadonly();
+  });
+
+  protected readonly filmResourceKey = createManagedMetadataKey<
+    Resource<Film | undefined>,
+    FieldContext<string>
+  >((ctx) => {
+    const resource = httpResource<Film>(() => ctx()!.value());
+
+    const guardEffectRef = effect((onCleanup) => {
+      ctx()!.fieldTree();
+
+      onCleanup(() => {
+        guardEffectRef.destroy();
+        resource.destroy();
+      });
+    });
+
+    return resource.asReadonly();
+  });
+
+  protected readonly form = form(
+    linkedSignal(
+      () =>
+        ({
+          residents: this.data().residents,
+          films: this.data().films,
+        }) as const,
+    ),
+    (path) => {
+      applyEach(path.residents, (eachPath) => {
+        metadata(eachPath, this.residentResourceKey, (ctx) => ctx);
+      });
+
+      applyEach(path.films, (eachPath) => {
+        metadata(eachPath, this.filmResourceKey, (ctx) => ctx);
+      });
+    },
   );
-
-  readonly films = computed(() =>
-    this.resource.hasValue()
-      ? this.resource.value().films.map((url) => fetchResource<Film>(url))
-      : [],
-  );
-
-  protected getId(url: string): string {
-    return url.split('/').filter(Boolean).pop()!;
-  }
-
-  searchGoogle(text: string) {
-    window.open(
-      `https://www.google.com/search?q=${encodeURIComponent(text + ' star wars')}`,
-      '_blank',
-    );
-  }
 }

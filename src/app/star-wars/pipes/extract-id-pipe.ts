@@ -1,11 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { extractId } from '../helpers';
 
 @Pipe({
   name: 'extractId',
-  standalone: true,
 })
 export class ExtractIdPipe implements PipeTransform {
-  transform(url: string): string {
-    return url.split('/').filter(Boolean).pop()!;
+  transform(value: string | null): string | null {
+    if (value === null) {
+      return null;
+    } else {
+      return extractId(value);
+    }
   }
 }

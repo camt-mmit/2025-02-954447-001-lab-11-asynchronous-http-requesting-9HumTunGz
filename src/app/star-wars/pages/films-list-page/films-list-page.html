@@ -12,15 +12,14 @@
   <nav class="_page-navigation">
     <span>
       @if (resource.hasValue()) {
-        <b>No. of items: </b>
-        <span class="app-cl-number">{{ resource.value().count | number }}</span>
+        <b>No. of items: </b
+        ><span class="app-cl-number">{{ resource.value().count | number }}</span>
       } @else if (resource.error()) {
         <b class="_status-warning">Error</b>
       } @else if (resource.isLoading()) {
         <b class="_status-loading">Loading</b>
       }
-      <b> | Page: </b>
-      <span class="app-cl-number">{{ currentPage() | number }}</span>
+      <b> | Page: </b><span class="app-cl-number">{{ currentPage() | number }}</span>
     </span>
 
     <ul class="app-cmp-nav">
@@ -30,6 +29,7 @@
           [queryParams]="previousPage() === '1' ? { page: null } : { page: previousPage() }"
           queryParamsHandling="merge"
           replaceUrl
+          aria-label="Previous Page"
         >
           <i class="material-symbols-outlined">chevron_backward</i>
         </a>
@@ -40,6 +40,7 @@
           [queryParams]="{ page: nextPage() }"
           queryParamsHandling="merge"
           replaceUrl
+          aria-label="Next Page"
         >
           <i class="material-symbols-outlined">chevron_forward</i>
         </a>
@@ -49,7 +50,7 @@
 </header>
 
 @if (resource.hasValue()) {
-  <app-films-list [resource]="resource" />
+  <app-films-list [data]="resource.value().results" />
 } @else if (resource.error(); as error) {
   <p class="_error-message">{{ error.message }}</p>
 }
